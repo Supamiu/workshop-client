@@ -87,7 +87,7 @@ function play_game(player, numplayer, numturn){
 				score:0,
 				score_vs:0,
 				player: numplayer,
-				turn: numturn
+				round: numturn
 			}),
 			contentType: "application/json",
 			success: (res) => {
