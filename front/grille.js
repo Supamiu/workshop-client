@@ -71,8 +71,9 @@ function init() {
 
 	// Force le premier joueur à placer au milieu
 	play(Math.trunc(nx/2), Math.trunc(ny/2));
+	couleurTour = couleurTour%2+1;
 
-	play_game(players[couleurTour - 1], couleurTour, turn)
+	play_game(players[couleurTour - 1], couleurTour, turn);
 
 	lastPlayTime = Math.floor(Date.now() / 1000);
 };
@@ -93,7 +94,6 @@ function play_game(player, numplayer, numturn){
 			contentType: "application/json",
 			success: (res) => {
 				var checked = check(res, numturn, grid, new Date().getTime());
-				console.log(res);
 				if(checked.result === 1){
 					play(res.x, res.y);
 					couleurTour = couleurTour%2+1;
