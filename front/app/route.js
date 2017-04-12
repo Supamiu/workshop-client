@@ -7,6 +7,9 @@ function Router(){
     let currentRoutes = routes.find(route => route.path == location);
 
     if(currentRoutes !== undefined){
+      if(localStorage.getItem(location)){
+        currentRoutes.components.updateModel(JSON.parse(localStorage.getItem(location)));
+      }
       document.getElementById('app').innerHTML = currentRoutes.components.template()
       if(currentRoutes.components.initialiseEvents !== undefined){
         currentRoutes.components.initialiseEvents();

@@ -14,8 +14,6 @@ function Game(){
 
     return {
         template : () => {
-        	console.log( JSON.parse(localStorage.getItem(window.location.pathname) ) );
-
         	//creation de la table
             elemTable = document.createElement("table");
             var row,cel;
@@ -41,6 +39,9 @@ function Game(){
         	html = "gauche" + elemTable.outerHTML + "droite";
 
         	return html ;
-    	}
-	}
+    	},
+        updateModel: (model) => {
+            Object.assign(this.model, this.model, model);
+        }
+    }
 }
