@@ -8,7 +8,9 @@ function Router(){
 
     if(currentRoutes !== undefined){
       document.getElementById('app').innerHTML = currentRoutes.components.template()
-      currentRoutes.components.initialiseEvents();
+      if(currentRoutes.components.initialiseEvents !== undefined){
+        currentRoutes.components.initialiseEvents();
+      }
     } else {
       document.getElementById('app').innerHTML = "Error"
     }
