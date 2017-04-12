@@ -18,7 +18,7 @@ var labelPlayer1 = "noir";	// nom du premier joueur
 var labelPlayer2 = "rouge";	// nom du second joueur
 var nbTenailles1 = 0;		// nombre de tenailles réalisées par le joueur 1
 var nbTenailles2 = 0;		// nombre de tenailles réalisées par le joueur 
-var turn = 0;
+var turn = 1;
 var turn_running = false;
 
 var players = [
@@ -65,7 +65,9 @@ function init() {
 		}
 	}
 	document.body.appendChild(elemTable);
-	couleurTour = 1;
+	couleurTour = Math.floor(Math.random() * 2);
+	turn++;
+	console.log(turn);
 	continueJeu = true;
 
 	// Force le premier joueur à placer au milieu
@@ -87,8 +89,9 @@ function play_game(player, numplayer, numturn){
 				score:0,
 				score_vs:0,
 				player: numplayer,
-				turn: numturn
+				round: numturn
 			}),
+			contentType: "application/json",
 			success: (res) => {
 				play(res.x, res.y);
 				couleurTour = 1 + ((couleurTour+1) % 2);
@@ -110,8 +113,8 @@ function play(x, y) {
 	var rslt;
 	// Change la couleur de la case où le pion est joué
 	grid[x][y] = couleurTour;
-	var elem = document.getElementById("grid_"+x+"_"+y);
-	if (elem) elem.className = couleurTour === 1 ? "first-color" : "second-color";
+	var elem = $("#grid_"+x+"_"+y);
+	if (elem) elem.attr('class', couleurTour === 1 ? "first-color" : "second-color");
 	couleurTour = couleurTour%2+1;
 
 	// On vérifie si le coup joué n'a pas généré une tenaille
