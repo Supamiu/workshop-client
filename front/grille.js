@@ -90,9 +90,8 @@ function play_game(player, numplayer, numturn){
 				turn: numturn
 			},
 			success: (res) => {
-				console.log(res);
-				couleurTour = 1 + ((couleurTour+1) % 2);
 				play(res.x, res.y);
+				couleurTour = 1 + ((couleurTour+1) % 2);
 				numturn ++;
 				play_game(players[couleurTour - 1], couleurTour, numturn)
 			}
