@@ -107,13 +107,6 @@ function play(x, y) {
 	// Le joueur a 10 secondes pour jouer
 	if (Math.floor(Date.now() / 1000) - lastPlayTime > 10) endGame("Vainqueur : " + (couleurTour%2+1 === 1 ? labelPlayer1 : labelPlayer2));
 
-	// Si c'est le 2e coup du premier joueur, il doit être 
-	// à plus de 3 intersections du premier jeton
-	if (nbCoup1 == nbCoupLimite -1  && !((couleurTour === 1 && iaNoir) || (couleurTour === 2 && iaBlanc)) && !checkCoordinate(x, y)) {
-		alert("Vous devez jouer à plus de 3 intersections de votre premier jeton !");
-		return false;
- 	}
-
 	var rslt;
 	// Change la couleur de la case où le pion est joué
 	grid[x][y] = couleurTour;
@@ -137,12 +130,6 @@ function play(x, y) {
 		nbCoup2--;
 	}
 	lastPlayTime = Math.floor(Date.now() / 1000);
-}
-
-// Vérifie si les coordonnées en entrée sont à au moins
-// 3 intersections du centre du la grille
-function checkCoordinate(x, y) {
-	return (Math.abs(Math.trunc(nx/2) - x) > 3 || Math.abs(Math.trunc(ny/2) - y) > 3);
 }
 
 
