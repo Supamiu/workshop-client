@@ -32,6 +32,7 @@ var players = [
 // Initialisation d'une partie
 function init() {
 
+	/*
 	// Initialisation de la grille
 	for (var x = 0; x < nx; x++) {
 		grid[x] = [];
@@ -64,7 +65,8 @@ function init() {
 			}
 		}
 	}
-	document.body.appendChild(elemTable);
+	*/
+	//document.body.appendChild(elemTable);
 	couleurTour = Math.floor(Math.random() * 2) + 1;
 	turn++;
 	continueJeu = true;
