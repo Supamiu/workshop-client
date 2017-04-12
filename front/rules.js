@@ -42,7 +42,7 @@ function check(pawn, round, board, start ) {
   }
 
   // check for the round 2 if the case is into the 8 squares allowed
-  if ( round == 2 ) {
+  if ( round == 3 ) {
     //si 2eme requete --> 3 ou plus intersection
     result &= ( x < 8 || x > 10 ) && ( y < 8 || y > 10 );
   }
