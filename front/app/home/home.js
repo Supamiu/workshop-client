@@ -9,17 +9,16 @@ function Home(){
       player1 : this.model.player1.model.toDict(),
       player2 : this.model.player2.model.toDict()
     }
-    console.log(game)
     router.go("/game", game)
   }
 
   return {
-    template : `
+    template : () => `
       <h1>Pente !</h1>
       <section class="form">
-        ${this.model.player1.template}
+        ${this.model.player1.template()}
         <div>VS</div>
-        ${this.model.player2.template}
+        ${this.model.player2.template()}
       </section>
       <button id="play">play</button>
     `,

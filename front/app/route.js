@@ -2,13 +2,15 @@ function Router(){
   let routes = [];
 
   function checkIfItsRoutes(event){
-    let location = window.location.pathname;
-    
+    let location = window.location.pathname.substr(window.location.pathname.lastIndexOf("/"), window.location.pathname.length);
+    console.log(location)
     let currentRoutes = routes.find(route => route.path == location);
 
     if(currentRoutes !== undefined){
-      document.getElementById('app').innerHTML = currentRoutes.components.template
-      currentRoutes.components.initialiseEvents();
+      document.getElementById('app').innerHTML = currentRoutes.components.template()
+      if(currentRoutes.components.initialiseEvents !== undefined){
+        currentRoutes.components.initialiseEvents();
+      }
     } else {
       document.getElementById('app').innerHTML = "Error"
     }
@@ -30,8 +32,6 @@ function Router(){
 let router = new Router();
 
 router.path("/", new Home());
+router.path("/index.html", new Home());
 
 router.start();
-
-
-
