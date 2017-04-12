@@ -9,7 +9,6 @@ function Home(){
       player1 : this.model.player1.model.toDict(),
       player2 : this.model.player2.model.toDict()
     }
-    console.log(game)
     router.go("/game", game)
   }
 
