@@ -27,7 +27,7 @@ var players = [
 ]
 
 // Lance l'initialisation de la grille une fois que la page est loadée
-window.addEventListener("load", init, false);
+//window.addEventListener("load", init, false);
 
 // Initialisation d'une partie
 function init() {

@@ -30,8 +30,6 @@ function Router(){
 let router = new Router();
 
 router.path("/", new Home());
+router.path("/index.html", new Home());
 
 router.start();
-
-
-
