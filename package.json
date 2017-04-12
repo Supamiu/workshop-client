@@ -1,0 +1,46 @@
+{
+  "name": "workshop-client",
+  "version": "1.0.0",
+  "description": "client workshop i4 16-17",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Supamiu/workshop-client.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Supamiu/workshop-client/issues"
+  },
+  "homepage": "https://github.com/Supamiu/workshop-client#readme",
+  "angular-cli": {},
+  "scripts": {
+    "build": "tsc -p src/",
+    "build:watch": "tsc -p src/ -w",
+    "serve": "lite-server -c=bs-config.json",
+    "prestart": "npm run build",
+    "start": "concurrently \"npm run build:watch\" \"npm run serve\""
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^4.0.2",
+    "@angular/common": "~4.0.0",
+    "@angular/compiler": "~4.0.0",
+    "@angular/core": "~4.0.0",
+    "@angular/forms": "^4.0.2",
+    "@angular/http": "~4.0.0",
+    "@angular/material": "^2.0.0-beta.3",
+    "@angular/platform-browser": "~4.0.0",
+    "@angular/platform-browser-dynamic": "~4.0.0",
+    "@angular/router": "^4.0.2",
+    "angular-in-memory-web-api": "~0.3.0",
+    "core-js": "^2.4.1",
+    "rxjs": "5.0.1",
+    "systemjs": "0.19.40",
+    "zone.js": "^0.8.4"
+  },
+  "devDependencies": {
+    "concurrently": "^3.2.0",
+    "lite-server": "^2.2.2",
+    "typescript": "~2.1.0"
+  }
+}

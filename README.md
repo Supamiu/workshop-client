@@ -1,15 +1,16 @@
 # workshop-client
 
-Première ébauche du client.
+Client réécrit en angular4.
 
 ## Logiciel Nécessaire :
-  - [Caddy HTTP](https://caddyserver.com)
+  - Npm et node
 
-## Préparation
+## Lancement:
 
- - ligne 24 du fichier grille.js il faut changer l'ip et le nom de chaque client dans le tableau. ça sera remplacé plus tard par un formulaire pour récupérer tout ça et le mettre en localstorage tout ça...
- - Ne pas oublier d'ajouter *Caddy* dans votre path
- 
-## Lancement
+Avant le premier lancement, il faut installer les dépendences:
 
- - Il suffit de lancer la commande `caddy -conf=./front/CaddyFile"`
+`npm i`
+
+Après ça, il suffit de lancer et l'app ouvrira directement le navigateur sur le bon port:
+
+`npm start`

@@ -1,0 +1,25 @@
+<div class="container">
+    <h1>Pente !</h1>
+    <section class="form-login">
+        <md-card class="inputs">
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="player1.name" name="name" placeholder="Joueur 1"/>
+            </md-input-container>
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="player1.ip" name="ip" placeholder="IP"/>
+            </md-input-container>
+        </md-card>
+        <div class="vs">VS</div>
+        <md-card class="inputs">
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="player2.name" name="name" placeholder="Joueur 2"/>
+            </md-input-container>
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="player2.ip" name="ip" placeholder="IP"/>
+            </md-input-container>
+        </md-card>
+    </section>
+    <div class="play">
+        <a md-raised-button [disabled]="!isFormValid()" (click)="play()">Play !</a>
+    </div>
+</div>
