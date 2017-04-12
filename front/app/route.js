@@ -2,8 +2,8 @@ function Router(){
   let routes = [];
 
   function checkIfItsRoutes(event){
-    let location = window.location.pathname;
-    
+    let location = window.location.pathname.substr(window.location.pathname.lastIndexOf("/")-1, window.location.pathname.length);
+    console.log(location)
     let currentRoutes = routes.find(route => route.path == location);
 
     if(currentRoutes !== undefined){
