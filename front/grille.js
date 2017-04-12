@@ -82,13 +82,13 @@ function play_game(player, numplayer, numturn){
 		$.ajax({
 			method: "PUT",
 			url: "http://" + player.ip + "/board", 
-			data:{
+			data:JSON.stringify({
 				board:grid,
 				score:0,
 				score_vs:0,
 				player: numplayer,
 				turn: numturn
-			},
+			}),
 			success: (res) => {
 				play(res.x, res.y);
 				couleurTour = 1 + ((couleurTour+1) % 2);
