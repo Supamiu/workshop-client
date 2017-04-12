@@ -3,7 +3,7 @@
 Première ébauche du client.
 
 ## Logiciel Nécessaire :
-  - (Caddy HTTP)[https://caddyserver.com]
+  - [Caddy HTTP](https://caddyserver.com)
 
 ## Préparation
 
