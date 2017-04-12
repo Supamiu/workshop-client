@@ -10,7 +10,8 @@ function PlayerForm(){
       }, {})
     }
 
-  this.template = ` 
+  this.template = function(){
+    return ` 
     <form>
       <p>
         <label for="name-${this.id}"> Nom : </label>
@@ -22,6 +23,7 @@ function PlayerForm(){
       </p>
     </form>
     `
+  }
 
   return this;
 }

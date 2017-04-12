@@ -7,7 +7,7 @@ function Router(){
     let currentRoutes = routes.find(route => route.path == location);
 
     if(currentRoutes !== undefined){
-      document.getElementById('app').innerHTML = currentRoutes.components.template
+      document.getElementById('app').innerHTML = currentRoutes.components.template()
       currentRoutes.components.initialiseEvents();
     } else {
       document.getElementById('app').innerHTML = "Error"
