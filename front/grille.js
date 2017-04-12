@@ -89,6 +89,7 @@ function play_game(player, numplayer, numturn){
 				player: numplayer,
 				turn: numturn
 			}),
+			contentType: "application/json",
 			success: (res) => {
 				play(res.x, res.y);
 				couleurTour = 1 + ((couleurTour+1) % 2);
