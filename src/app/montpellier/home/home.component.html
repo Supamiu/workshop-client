@@ -1,0 +1,20 @@
+<div class="container">
+    <h1>Pente !</h1>
+    <section class="form-login">
+        <md-card class="inputs">
+            <md-card-title>Mode Montpellier activé</md-card-title>
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="player.name" name="name" placeholder="Nom de l'IA"/>
+            </md-input-container>
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="player.ip" name="ip" placeholder="IP"/>
+            </md-input-container>
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="server.ip" name="ipserver" placeholder="IP Server"/>
+            </md-input-container>
+        </md-card>
+    </section>
+    <div class="play">
+        <a md-raised-button [disabled]="!isFormValid()" (click)="play()">Play !</a>
+    </div>
+</div>
