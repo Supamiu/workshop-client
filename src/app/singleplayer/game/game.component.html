@@ -1,0 +1,25 @@
+
+
+<h1 *ngIf="continueJeu">{{getPlayer(1)?.name}} vs {{getPlayer(2)?.name}}</h1>
+<h1 *ngIf="!continueJeu">{{endMessage}}</h1>
+<div class="container">
+    <div class="row">
+        <h2 class="first-color-text">{{getPlayer(1)?.name}}</h2>
+        Pierres : {{nbCoup1}} <br>
+        Tenailles : {{nbTenailles1}}
+        <div *ngIf="couleurTour === 1 && continueJeu">{{timerDisplay | date:'ss'}}s</div>
+    </div>
+    <table>
+        <tr *ngFor="let x=index;let row of grid">
+            <td *ngFor="let y=index;let cell of row" [ngClass]="{'first-color': cell===1, 'second-color':cell===2}"
+                (click)="placePawn(x,y)"></td>
+        </tr>
+    </table>
+    <div class="row">
+        <h2 class="second-color-text">{{getPlayer(2)?.name}}</h2>
+        Pierres : {{nbCoup2}}<br>
+        Tenailles : {{nbTenailles2}}
+        <div *ngIf="couleurTour === 2 && continueJeu">{{timerDisplay | date:'ss'}}s</div>
+    </div>
+</div>
+<div class="timer">{{getTime() | date:'mm:ss'}}</div>

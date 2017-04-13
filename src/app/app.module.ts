@@ -11,6 +11,8 @@ import {HttpModule} from "@angular/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MontpellierGameComponent} from "./montpellier/game/game.component";
 import {MontpellierHomeComponent} from "./montpellier/home/home.component";
+import {SinglePlayerHomeComponent} from "./singleplayer/home/home.component";
+import {SinglePlayerGameComponent} from "./singleplayer/game/game.component";
 
 const routes: Routes = [
     {
@@ -33,6 +35,14 @@ const routes: Routes = [
     {
         path: 'montpellier/game',
         component: MontpellierGameComponent
+    },
+    {
+        path: 'singleplayer/home',
+        component: SinglePlayerHomeComponent
+    },
+    {
+        path: 'singleplayer/game',
+        component: SinglePlayerGameComponent
     }
 ];
 
@@ -54,8 +64,10 @@ const routes: Routes = [
         GameComponent,
         HomeComponent,
         MontpellierGameComponent,
-        MontpellierHomeComponent
-    ],
+        MontpellierHomeComponent,
+        SinglePlayerHomeComponent,
+        SinglePlayerGameComponent
+],
     providers: [
         DataService
     ],
