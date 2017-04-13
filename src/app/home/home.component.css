@@ -1,0 +1,35 @@
+.container {
+    width: 60%;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+.form-login {
+    display: flex; /* establish flex container */
+    flex-direction: row; /* default value; can be omitted */
+    flex-wrap: nowrap; /* default value; can be omitted */
+    justify-content: space-between; /* switched from default (flex-start, see below) */
+}
+
+.vs {
+    width: 30%;
+    text-align: center;
+    font-size: 70px;
+    font-weight: 900;
+}
+
+.play {
+    height: 20px;
+    position: relative;
+    left: 46%;
+    margin: 30px auto 0;
+}
+
+.inputs {
+    width: 30%;
+    margin: auto;
+    text-align: center;
+}

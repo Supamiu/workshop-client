@@ -1,1 +1,8 @@
 back
+.idea
+node_modules
+src/**/*.js
+src/**/*.js.map
+!systemjs*
+
+*.log

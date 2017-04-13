@@ -1,0 +1,19 @@
+<h1>{{getPlayer(1)?.name}} vs {{getPlayer(2)?.name}}</h1>
+<div class="container">
+    <div class="row">
+        <h2 class="first-color-text">{{getPlayer(1)?.name}}</h2>
+        Pierres : {{nbCoup1}} <br>
+        Tenailles : {{nbTenailles1}}
+    </div>
+    <table>
+        <tr *ngFor="let row of grid">
+            <td *ngFor="let cell of row" [ngClass]="{'first-color': cell===1, 'second-color':cell===2}"></td>
+        </tr>
+    </table>
+    <div class="row">
+        <h2 class="second-color-text">{{getPlayer(2)?.name}}</h2>
+        Pierres : {{nbCoup2}}<br>
+        Tenailles : {{nbTenailles2}}
+    </div>
+</div>
+<div class="timer">{{getTime() | date:'mm:ss'}}</div>
