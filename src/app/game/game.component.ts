@@ -3,6 +3,7 @@ import {DataService} from "../data.service";
 import {Player} from "../model/player";
 import {Http, Headers} from "@angular/http";
 import {MdDialog} from "@angular/material";
+import 'rxjs/add/operator/timeout';
 /**
  * Created by Miu on 12/04/2017.
  */
@@ -26,6 +27,12 @@ export class GameComponent implements OnInit {
     public nbTenailles2 = 0;		// nombre de tenailles réalisées par le joueur
     public turn = 1;
 
+    public timer: Date = new Date(Date.now() + 10000);
+
+    public timerDisplay: Date;
+
+    public endMessage = "Partie Terminée";
+
     public start: Date;
 
     public now: Date = new Date();
@@ -43,8 +50,18 @@ export class GameComponent implements OnInit {
         }
 
         setInterval(() => {
-            this.now = new Date();
+            if (this.continueJeu) {
+                this.now = new Date();
+            }
         }, 1000);
+
+        setInterval(() => {
+            if (this.continueJeu) {
+                let newTime = this.timer.getTime() - Date.now();
+                newTime = newTime<0?0:newTime;
+                this.timerDisplay = new Date(newTime);
+            }
+        }, 300);
 
         this.start = new Date();
     }
@@ -84,6 +101,7 @@ export class GameComponent implements OnInit {
     play_game(numplayer: number, numturn: number, startTime: number): void {
         if (!this.continueJeu) return;
         setTimeout(() => {
+            this.timerDisplay = new Date(this.timer.getTime() - Date.now());
             this.http.put(
                 "http://" + this.getPlayer(numplayer).ip + "/board/",
                 JSON.stringify({
@@ -94,21 +112,27 @@ export class GameComponent implements OnInit {
                     round: numturn
                 }),
                 {headers: this.headers}
-            ).subscribe(response => {
-                let res = response.json();
-                let checked = this.check(res, numturn, startTime);
-                if (checked.result) {
-                    this.play(res.x, res.y);
-                    this.couleurTour = this.couleurTour % 2 + 1;
-                    numturn++;
-                    this.play_game(this.couleurTour, numturn, new Date().getTime());
-                } else if (checked.isTimeout) {
-                    let winner = this.couleurTour == 1 ? 2 : 1;
-                    this.endGame("Victoire par timeout, " + this.getPlayer(winner - 1).name + " a Gagné");
-                } else {
-                    this.play_game(this.couleurTour, numturn, startTime);
-                }
-            });
+            )
+                .timeout(10000)
+                .subscribe(response => {
+                    let res = response.json();
+                    let checked = this.check(res, numturn, startTime);
+                    if (checked.result) {
+                        this.play(res.x, res.y);
+                        this.couleurTour = this.couleurTour % 2 + 1;
+                        numturn++;
+                        this.timer = new Date(Date.now() + 10000);
+                        this.play_game(this.couleurTour, numturn, new Date().getTime());
+                    } else if (checked.isTimeout) {
+                        let winner = this.couleurTour==1?2:1;
+                        this.endGame("Victoire par timeout, " + this.getPlayer(winner).name + " a Gagné");
+                    } else {
+                        this.play_game(this.couleurTour, numturn, startTime);
+                    }
+                }, () => {
+                    let winner = this.couleurTour==1?2:1;
+                    this.endGame("Victoire par timeout, " + this.getPlayer(winner).name + " a Gagné");
+                });
         }, 300);
     }
 
@@ -124,9 +148,7 @@ export class GameComponent implements OnInit {
         this.checkTenailles(x, y);
 
         // Vérifie les conditions de fin de partie : victoire ou égalité
-        setTimeout(() => {
-            if (rslt = this.checkWinner(x, y)) this.endGame("Vainqueur : " + (rslt === 1 ? this.getPlayer(1).name : this.getPlayer(2).name));
-        }, 50);
+        if (rslt = this.checkWinner(x, y)) this.endGame("Vainqueur : " + (rslt === 1 ? this.getPlayer(1).name : this.getPlayer(2).name));
 
         if (!this.canPlay(this.nbCoup1, this.nbCoup2)) this.endGame("Partie nulle : égalité");
 
@@ -141,7 +163,7 @@ export class GameComponent implements OnInit {
     endGame(message: string): void {
         console.log(message);
         this.continueJeu = false;
-        alert(message);
+        this.endMessage = message;
     }
 
     canPlay(pawnCounter1: number, pawnCounter2: number): boolean {
