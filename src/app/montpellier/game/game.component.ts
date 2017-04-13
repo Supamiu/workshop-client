@@ -28,8 +28,8 @@ export class MontpellierGameComponent implements OnInit {
 
     public playerId: string;
 
-    public start: Date;
-    public now: Date;
+    public start: Date = new Date();
+    public now: Date = new Date();
 
     private headers: Headers = new Headers();
 
@@ -92,6 +92,9 @@ export class MontpellierGameComponent implements OnInit {
             this.http.get("http://" + this.dataService.server.ip + "/turn/" + this.playerId)
                 .map(res => res.json())
                 .subscribe(res => {
+                        if (res.finPartie) {
+                            this.endGame(res.detailFinPartie);
+                        }
                         if (res.status == 0) {
                             //Si c'est pas à nous de jouer, on repool.
                             this.pooling();
@@ -104,6 +107,22 @@ export class MontpellierGameComponent implements OnInit {
 
                             if (res.numTour == 1) {
                                 this.play(Math.trunc(this.nx / 2), Math.trunc(this.ny / 2));
+                            } else {
+                                this.http.put(
+                                    "http://" + this.getPlayer().ip + "/board/",
+                                    JSON.stringify({
+                                        board: this.grid,
+                                        score: this.couleurTour == 1 ? this.nbTenailles1 : this.nbTenailles2,
+                                        score_vs: this.couleurTour == 1 ? this.nbTenailles2 : this.nbTenailles1,
+                                        player: this.couleurTour,
+                                        round: this.turn
+                                    }),
+                                    {headers: this.headers}
+                                ).subscribe(res => {
+                                    let result = res.json();
+                                    this.play(result.x, result.y);
+                                    this.pooling();
+                                })
                             }
                         }
 
