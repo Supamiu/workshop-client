@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
-import {DataService} from "../data.service";
-import {Player} from "../model/player";
+import {DataService} from "../../data.service";
+import {Player} from "../../model/player";
 import {Http, Headers} from "@angular/http";
 import {MdDialog} from "@angular/material";
 /**
@@ -11,7 +11,7 @@ import {MdDialog} from "@angular/material";
     templateUrl: "./game.component.html",
     styleUrls: ["./game.component.css"]
 })
-export class GameComponent implements OnInit {
+export class MontpellierGameComponent implements OnInit {
 
     public nx = 19; 				// nombre de cellules en largeur
     public ny = 19; 				// nombre de cellules en hauteur
@@ -26,13 +26,14 @@ export class GameComponent implements OnInit {
     public nbTenailles2 = 0;		// nombre de tenailles réalisées par le joueur
     public turn = 1;
 
-    public start: Date;
+    public playerId: string;
 
-    public now: Date = new Date();
+    public start: Date;
+    public now: Date;
 
     private headers: Headers = new Headers();
 
-    constructor(private dataService: DataService, private http: Http, private dialog: MdDialog) {
+    constructor(private dataService: DataService, private http: Http) {
         this.headers.append("content-type", "application/json");
         // Initialisation de la grille
         for (let x = 0; x < this.nx; x++) {
@@ -43,7 +44,7 @@ export class GameComponent implements OnInit {
         }
 
         setInterval(() => {
-            this.now = new Date();
+            this.now = new Date()
         }, 1000);
 
         this.start = new Date();
@@ -53,26 +54,31 @@ export class GameComponent implements OnInit {
         return new Date(this.now.getTime() - this.start.getTime());
     }
 
-    public getPlayer(index: number): Player {
+    public getPlayer(): Player {
         //Mock pour pouvoir bosser sur la vue game sans passer par home à chaque test.
         // let p = new Player();
         // p.ip = "127.0.0.1:8000";
         // p.name = "generated player";
         // return p;
-        return this.dataService.getPlayer(index);
+        return this.dataService.getPlayer(1);
     }
 
     /*
      ADAPTATION grille.js
      */
     ngOnInit(): void {
-        this.couleurTour = Math.floor(Math.random() * 2) + 1;
-        this.turn++;
         this.continueJeu = true;
 
+        this.http.get("http://" + this.dataService.server.ip + "/connect/" + this.dataService.getPlayer(1).name)
+            .map(res => res.json())
+            .do(res => {
+                this.playerId = res.playerId;
+                this.couleurTour = res.numJoueur;
+            })
+            .subscribe(() => {
+                this.pooling();
+            });
         // Force le premier joueur à placer au milieu
-        this.play(Math.trunc(this.nx / 2), Math.trunc(this.ny / 2));
-        this.couleurTour = this.couleurTour % 2 + 1;
 
         let start = new Date().getTime();
 
@@ -81,74 +87,78 @@ export class GameComponent implements OnInit {
         this.lastPlayTime = Math.floor(Date.now() / 1000);
     }
 
+    pooling(): void {
+        setTimeout(() => {
+            this.http.get("http://" + this.dataService.server.ip + "/turn/" + this.playerId)
+                .map(res => res.json())
+                .subscribe(res => {
+                        if (res.status == 0) {
+                            //Si c'est pas à nous de jouer, on repool.
+                            this.pooling();
+                        } else {
+                            //C'est à nous de jouer !
+                            this.grid = res.tableau;
+                            this.nbTenailles1 = res.nbTenailles1;
+                            this.nbTenailles2 = res.nbTenailles2;
+                            this.continueJeu = !res.finPartie;
+
+                            if (res.numTour == 1) {
+                                this.play(Math.trunc(this.nx / 2), Math.trunc(this.ny / 2));
+                            }
+                        }
+
+                    },
+                    () => {
+                        //On se retrouve ici en cas d'erreur http.
+                        this.pooling();
+                    })
+        }, 500);
+    }
+
     play_game(numplayer: number, numturn: number, startTime: number): void {
         if (!this.continueJeu) return;
-        setTimeout(() => {
-            this.http.put(
-                "http://" + this.getPlayer(numplayer).ip + "/board/",
-                JSON.stringify({
-                    board: this.grid,
-                    score: numplayer == 1 ? this.nbTenailles1 : this.nbTenailles2,
-                    score_vs: numplayer == 1 ? this.nbTenailles2 : this.nbTenailles1,
-                    player: numplayer,
-                    round: numturn
-                }),
-                {headers: this.headers}
-            ).subscribe(response => {
-                let res = response.json();
-                let checked = this.check(res, numturn, startTime);
-                if (checked.result) {
-                    this.play(res.x, res.y);
-                    this.couleurTour = this.couleurTour % 2 + 1;
-                    numturn++;
-                    this.play_game(this.couleurTour, numturn, new Date().getTime());
-                } else if (checked.isTimeout) {
-                    let winner = this.couleurTour == 1 ? 2 : 1;
-                    this.endGame("Victoire par timeout, " + this.getPlayer(winner - 1).name + " a Gagné");
-                } else {
-                    this.play_game(this.couleurTour, numturn, startTime);
-                }
-            });
-        }, 300);
+
+        this.http.put(
+            "http://" + this.getPlayer().ip + "/board/",
+            JSON.stringify({
+                board: this.grid,
+                score: numplayer == 1 ? this.nbTenailles1 : this.nbTenailles2,
+                score_vs: numplayer == 1 ? this.nbTenailles2 : this.nbTenailles1,
+                player: numplayer,
+                round: numturn
+            }),
+            {headers: this.headers}
+        ).subscribe(response => {
+            let res = response.json();
+            let checked = this.check(res, numturn, startTime);
+            if (checked.result) {
+                this.play(res.x, res.y);
+                this.couleurTour = this.couleurTour % 2 + 1;
+                numturn++;
+                this.play_game(this.couleurTour, numturn, new Date().getTime());
+            } else if (checked.isTimeout) {
+                let winner = this.couleurTour == 1 ? 2 : 1;
+                this.endGame("Victoire par timeout, " +
+                    (winner == this.couleurTour ? this.getPlayer().name : "Adversaire")
+                    + " a Gagné");
+            } else {
+                this.play_game(this.couleurTour, numturn, startTime);
+            }
+        });
     }
 
     play(x: number, y: number): void {
         if (!this.continueJeu) return;
 
-        let rslt: number;
+        this.http.get("http://" + this.dataService.server + "/" + x + "/" + y + "/" + this.playerId)
+            .map(res => res.json())//Ici on pourra brancher l'adaptation des formats pourris.
+            .subscribe(res => {
+
+            });
+
+        let rslt;
         // Change la couleur de la case où le pion est joué
         this.grid[x][y] = this.couleurTour;
-
-        // On vérifie si le coup joué n'a pas généré une tenaille
-        // si c'est le cas, on incrémente le compteur du joueur courant
-        this.checkTenailles(x, y);
-
-        // Vérifie les conditions de fin de partie : victoire ou égalité
-        setTimeout(() => {
-            if (rslt = this.checkWinner(x, y)) this.endGame("Vainqueur : " + (rslt === 1 ? this.getPlayer(1).name : this.getPlayer(2).name));
-        }, 50);
-
-        
-
-       
-
-        if (!this.canPlay(this.nbCoup1, this.nbCoup2)) {
-            if (this.nbTenailles1 > this.nbTenailles2) {
-                this.endGame("Vainqueur : " + this.getPlayer(1).name);
-            } 
-            else if (this.nbTenailles2 > this.nbTenailles1) {
-                this.endGame("Vainqueur : " + this.getPlayer(2).name);
-            } else {
-                this.endGame("Partie nulle : égalité");
-            }
-        }
-
-        // Décrémentation du nombre de jeton du joueur
-        if (this.couleurTour === 1) {
-            this.nbCoup1--;
-        } else {
-            this.nbCoup2--;
-        }
     }
 
     endGame(message: string): void {
@@ -304,53 +314,49 @@ export class GameComponent implements OnInit {
     }
 
     check(pawn: {x: number, y: number}, round: number, start: number): {result: boolean, isTimeout: boolean} {
-        // time when we receive the answer
+        // time when we receve the answer
         let currentTime = new Date().getTime();
 
-        let resultNumber = 1;
-
-        let res: boolean;
+        let result = true;
 
         // Get X and Y
         let x = pawn.x;
         let y = pawn.y;
 
         // check if x is an integer
-        resultNumber &= this.isInt(x) ? 1 : 0;
+        result = this.isInt(x);
 
         // check if y is an integer
-        resultNumber &= this.isInt(y) ? 1 : 0;
+        result = this.isInt(y);
 
         // check if x is on the board
-        resultNumber &= ( x > -1 || x < 20 ) ? 1 : 0;
+        result = ( x > -1 || x < 20 );
 
         // check if y is on the board
-        resultNumber &= ( y > -1 || y < 20 ) ? 1 : 0;
+        result = ( y > -1 || y < 20 );
 
         // check if the board's square
         // try catch because if x or y is not an integer an excpetion is throw
         try {
-            resultNumber &= ( this.grid[x][y] == 0 ) ? 1 : 0;
+            result = ( this.grid[x][y] == 0 );
         } catch (Exception) {
-            resultNumber &= 0;
+            result = false;
         }
 
         // check if time is respected
         let isTimeout = false;
         if (( currentTime - start ) > 10 * 1000) {
             isTimeout = true;
-            resultNumber = 0;
+            result = false;
         }
 
         // check for the round 2 if the case is into the 8 squares allowed
         if (round == 3) {
             //si 2eme requete --> 3 ou plus intersection
-            resultNumber &= ( ( x < 8 || x > 10 ) || ( y < 8 || y > 10 ) ) ? 1 : 0;
+            result = ( x < 8 || x > 10 ) || ( y < 8 || y > 10 );
         }
 
-        res = resultNumber == 1;
-
-        return {result: res, isTimeout: isTimeout};
+        return {result: result, isTimeout: isTimeout};
     }
 
     /*

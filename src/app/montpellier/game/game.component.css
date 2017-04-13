@@ -1,0 +1,52 @@
+h1 {
+    text-align: center;
+}
+
+td {
+    border: 1px solid black;
+    border-radius: 25px;
+    width: 25px;
+    height: 25px;
+    box-shadow: 0 0 1px 0 white inset, 0 0 1px 0 white;
+}
+
+td.none {
+    background-color: inherit;
+}
+
+td.first-color {
+    background-color: #212121;
+}
+
+td.second-color {
+    background-color: #E57373;
+}
+
+.first-color-text{
+    color: #212121;
+}
+
+.second-color-text {
+    color: #E57373;
+}
+
+.container {
+    width: 100%;
+    display: flex; /* establish flex container */
+    flex-direction: row; /* default value; can be omitted */
+    flex-wrap: nowrap; /* default value; can be omitted */
+    justify-content: space-between; /* switched from default (flex-start, see below) */
+}
+
+.container > .row {
+    width: 20%;
+    text-align: center;
+}
+
+.timer {
+    margin-top: 15px;
+    text-align: center;
+    color: #369;
+    font-weight: 700;
+    font-size: 150%;
+}

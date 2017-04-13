@@ -14,13 +14,6 @@ h1 {
     justify-content: space-between; /* switched from default (flex-start, see below) */
 }
 
-.vs {
-    width: 30%;
-    text-align: center;
-    font-size: 70px;
-    font-weight: 900;
-}
-
 .play {
     height: 20px;
     position: relative;
@@ -28,15 +21,8 @@ h1 {
     margin: 30px auto 0;
 }
 
-.montpellier {
-    height: 50px;
-    position: relative;
-    left: 44%;
-    margin: 30px auto 0;
-}
-
 .inputs {
-    width: 30%;
+    width: 60%;
     margin: auto;
     text-align: center;
 }
