@@ -58,7 +58,7 @@ export class GameComponent implements OnInit {
         setInterval(() => {
             if (this.continueJeu) {
                 let newTime = this.timer.getTime() - Date.now();
-                newTime = newTime<0?0:newTime;
+                newTime = newTime < 0 ? 0 : newTime;
                 this.timerDisplay = new Date(newTime);
             }
         }, 300);
@@ -124,14 +124,19 @@ export class GameComponent implements OnInit {
                         this.timer = new Date(Date.now() + 10000);
                         this.play_game(this.couleurTour, numturn, new Date().getTime());
                     } else if (checked.isTimeout) {
-                        let winner = this.couleurTour==1?2:1;
+                        let winner = this.couleurTour == 1 ? 2 : 1;
                         this.endGame("Victoire par timeout, " + this.getPlayer(winner).name + " a Gagné");
                     } else {
                         this.play_game(this.couleurTour, numturn, startTime);
                     }
-                }, () => {
-                    let winner = this.couleurTour==1?2:1;
-                    this.endGame("Victoire par timeout, " + this.getPlayer(winner).name + " a Gagné");
+                }, (error) => {
+                    console.error(error);
+                    if (error.name === "TimeoutError"){
+                        let winner = this.couleurTour == 1 ? 2 : 1;
+                        this.endGame("Victoire par timeout, " + this.getPlayer(winner).name + " a Gagné");
+                    }else{
+                        this.play_game(this.couleurTour, numturn, startTime);
+                    }
                 });
         }, 300);
     }
@@ -150,14 +155,11 @@ export class GameComponent implements OnInit {
         // Vérifie les conditions de fin de partie : victoire ou égalité
         if (rslt = this.checkWinner(x, y)) this.endGame("Vainqueur : " + (rslt === 1 ? this.getPlayer(1).name : this.getPlayer(2).name));
 
-        
-
-       
 
         if (!this.canPlay(this.nbCoup1, this.nbCoup2)) {
             if (this.nbTenailles1 > this.nbTenailles2) {
                 this.endGame("Vainqueur : " + this.getPlayer(1).name);
-            } 
+            }
             else if (this.nbTenailles2 > this.nbTenailles1) {
                 this.endGame("Vainqueur : " + this.getPlayer(2).name);
             } else {
