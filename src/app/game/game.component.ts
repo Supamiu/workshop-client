@@ -79,6 +79,24 @@ export class GameComponent implements OnInit {
         return this.dataService.getPlayer(index);
     }
 
+    public restart(): void {
+        this.nbCoup1 = this.nbCoup2 = 30;
+        for (let x = 0; x < this.nx; x++) {
+            this.grid[x] = [];
+            for (let y = 0; y < this.ny; y++) {
+                this.grid[x][y] = 0;
+            }
+        }
+        this.turn = 1;
+
+        this.continueJeu = true;
+        this.nbTenailles1 = this.nbTenailles2 = 0;
+
+        this.start = new Date();
+
+        this.ngOnInit();
+    }
+
     /*
      ADAPTATION grille.js
      */
@@ -131,10 +149,10 @@ export class GameComponent implements OnInit {
                     }
                 }, (error) => {
                     console.error(error);
-                    if (error.name === "TimeoutError"){
+                    if (error.name === "TimeoutError") {
                         let winner = this.couleurTour == 1 ? 2 : 1;
                         this.endGame("Victoire par timeout, " + this.getPlayer(winner).name + " a Gagné");
-                    }else{
+                    } else {
                         this.play_game(this.couleurTour, numturn, startTime);
                     }
                 });
