@@ -126,9 +126,9 @@ export class SinglePlayerGameComponent implements OnInit {
                         if (checked.result) {
                             this.play(res.x, res.y);
                             this.couleurTour = this.couleurTour % 2 + 1;
-                            numturn++;
+                            this.turn++;
                             this.timer = new Date(Date.now() + 10000);
-                            this.play_game(this.couleurTour, numturn, new Date().getTime());
+                            this.play_game(this.couleurTour, this.turn, new Date().getTime());
                         } else if (checked.isTimeout) {
                             let winner = this.couleurTour == 1 ? 2 : 1;
                             this.endGame("Victoire par timeout, " + this.getPlayer(winner).name + " a Gagné");
@@ -151,6 +151,7 @@ export class SinglePlayerGameComponent implements OnInit {
     placePawn(x: number, y: number): void {
         if (this.couleurTour === 2) {
             //Si c'est bien le joueur
+            console.log("turn : ", this.turn);
             let checked = this.check({x: x, y: y}, this.turn, this.timer.getTime() - 10000);
             if (checked.result) {
                 this.play(x, y);
