@@ -28,6 +28,13 @@ h1 {
     margin: 30px auto 0;
 }
 
+.montpellier {
+    height: 50px;
+    position: relative;
+    left: 44%;
+    margin: 30px auto 0;
+}
+
 .inputs {
     width: 30%;
     margin: auto;

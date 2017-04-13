@@ -26,7 +26,7 @@ export class GameComponent implements OnInit {
     public nbTenailles2 = 0;		// nombre de tenailles réalisées par le joueur
     public turn = 1;
 
-    public start:Date;
+    public start: Date;
 
     private headers: Headers = new Headers();
 
@@ -43,7 +43,7 @@ export class GameComponent implements OnInit {
         this.start = new Date();
     }
 
-    public getTime():Date{
+    public getTime(): Date {
         return new Date(Date.now() - this.start.getTime());
     }
 
@@ -79,7 +79,7 @@ export class GameComponent implements OnInit {
         if (!this.continueJeu) return;
         setTimeout(() => {
             this.http.put(
-                "http://" + this.getPlayer(numplayer).ip + "/board",
+                "http://" + this.getPlayer(numplayer).ip + "/board/",
                 JSON.stringify({
                     board: this.grid,
                     score: numplayer == 1 ? this.nbTenailles1 : this.nbTenailles2,
@@ -109,7 +109,7 @@ export class GameComponent implements OnInit {
     play(x: number, y: number): void {
         if (!this.continueJeu) return;
 
-        let rslt;
+        let rslt: number;
         // Change la couleur de la case où le pion est joué
         this.grid[x][y] = this.couleurTour;
 
@@ -118,7 +118,9 @@ export class GameComponent implements OnInit {
         this.checkTenailles(x, y);
 
         // Vérifie les conditions de fin de partie : victoire ou égalité
-        if (rslt = this.checkWinner(x, y)) this.endGame("Vainqueur : " + (rslt === 1 ? this.getPlayer(1).name : this.getPlayer(2).name));
+        setTimeout(() => {
+            if (rslt = this.checkWinner(x, y)) this.endGame("Vainqueur : " + (rslt === 1 ? this.getPlayer(1).name : this.getPlayer(2).name));
+        }, 50);
 
         if (!this.canPlay(this.nbCoup1, this.nbCoup2)) this.endGame("Partie nulle : égalité");
 
@@ -283,49 +285,53 @@ export class GameComponent implements OnInit {
     }
 
     check(pawn: {x: number, y: number}, round: number, start: number): {result: boolean, isTimeout: boolean} {
-        // time when we receve the answer
+        // time when we receive the answer
         let currentTime = new Date().getTime();
 
-        let result = true;
+        let resultNumber = 1;
+
+        let res: boolean;
 
         // Get X and Y
         let x = pawn.x;
         let y = pawn.y;
 
         // check if x is an integer
-        result = this.isInt(x);
+        resultNumber &= this.isInt(x)?1:0;
 
         // check if y is an integer
-        result = this.isInt(y);
+        resultNumber &= this.isInt(y)?1:0;
 
         // check if x is on the board
-        result = ( x > -1 || x < 20 );
+        resultNumber &= ( x > -1 || x < 20 )?1:0;
 
         // check if y is on the board
-        result = ( y > -1 || y < 20 );
+        resultNumber &= ( y > -1 || y < 20 )?1:0;
 
         // check if the board's square
         // try catch because if x or y is not an integer an excpetion is throw
         try {
-            result = ( this.grid[x][y] == 0 );
+            resultNumber &= ( this.grid[x][y] == 0 )?1:0;
         } catch (Exception) {
-            result = false;
+            resultNumber &= 0;
         }
 
         // check if time is respected
         let isTimeout = false;
         if (( currentTime - start ) > 10 * 1000) {
             isTimeout = true;
-            result = false;
+            resultNumber = 0;
         }
 
         // check for the round 2 if the case is into the 8 squares allowed
         if (round == 3) {
             //si 2eme requete --> 3 ou plus intersection
-            result = ( x < 8 || x > 10 ) || ( y < 8 || y > 10 );
+            resultNumber &= ( ( x < 8 || x > 10 ) || ( y < 8 || y > 10 ) )?1:0;
         }
 
-        return {result: result, isTimeout: isTimeout};
+        res = resultNumber == 1;
+
+        return {result: res, isTimeout: isTimeout};
     }
 
     /*

@@ -9,6 +9,8 @@ import {MdButtonModule, MdInputModule, MdCardModule, MdDialogModule} from "@angu
 import {DataService} from "./data.service";
 import {HttpModule} from "@angular/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MontpellierGameComponent} from "./montpellier/game/game.component";
+import {MontpellierHomeComponent} from "./montpellier/home/home.component";
 
 const routes: Routes = [
     {
@@ -23,6 +25,14 @@ const routes: Routes = [
     {
         path: 'game',
         component: GameComponent
+    },
+    {
+        path: 'montpellier/home',
+        component: MontpellierHomeComponent
+    },
+    {
+        path: 'montpellier/game',
+        component: MontpellierGameComponent
     }
 ];
 
@@ -42,7 +52,9 @@ const routes: Routes = [
     declarations: [
         AppComponent,
         GameComponent,
-        HomeComponent
+        HomeComponent,
+        MontpellierGameComponent,
+        MontpellierHomeComponent
     ],
     providers: [
         DataService
