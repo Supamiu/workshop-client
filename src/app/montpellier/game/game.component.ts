@@ -72,7 +72,7 @@ export class MontpellierGameComponent implements OnInit {
         this.http.get("http://" + this.dataService.server.ip + "/connect/" + this.dataService.getPlayer(1).name)
             .map(res => res.json())
             .do(res => {
-                this.playerId = res.playerId;
+                this.playerId = res.idJoueur;
                 this.couleurTour = res.numJoueur;
             })
             .subscribe(() => {
@@ -169,7 +169,9 @@ export class MontpellierGameComponent implements OnInit {
     play(x: number, y: number): void {
         if (!this.continueJeu) return;
 
-        this.http.get("http://" + this.dataService.server + "/" + x + "/" + y + "/" + this.playerId)
+        console.log("SENDING  { "+"x:"+x+", y:"+y+" }");
+
+        this.http.get("http://" + this.dataService.server.ip + "/" + x + "/" + y + "/" + this.playerId)
             .map(res => res.json())//Ici on pourra brancher l'adaptation des formats pourris.
             .subscribe(res => {
 

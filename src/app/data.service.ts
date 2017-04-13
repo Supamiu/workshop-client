@@ -9,7 +9,7 @@ export class DataService {
 
     private players: Player[] = [];
 
-    private _server:Server;
+    private _server: Server;
 
     public setPlayer(index: number, player: Player): void {
         this.players[index] = player;
