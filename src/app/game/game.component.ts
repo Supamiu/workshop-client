@@ -150,7 +150,20 @@ export class GameComponent implements OnInit {
         // Vérifie les conditions de fin de partie : victoire ou égalité
         if (rslt = this.checkWinner(x, y)) this.endGame("Vainqueur : " + (rslt === 1 ? this.getPlayer(1).name : this.getPlayer(2).name));
 
-        if (!this.canPlay(this.nbCoup1, this.nbCoup2)) this.endGame("Partie nulle : égalité");
+        
+
+       
+
+        if (!this.canPlay(this.nbCoup1, this.nbCoup2)) {
+            if (this.nbTenailles1 > this.nbTenailles2) {
+                this.endGame("Vainqueur : " + this.getPlayer(1).name);
+            } 
+            else if (this.nbTenailles2 > this.nbTenailles1) {
+                this.endGame("Vainqueur : " + this.getPlayer(2).name);
+            } else {
+                this.endGame("Partie nulle : égalité");
+            }
+        }
 
         // Décrémentation du nombre de jeton du joueur
         if (this.couleurTour === 1) {
