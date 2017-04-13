@@ -28,7 +28,7 @@ export class GameComponent implements OnInit {
 
     public start: Date;
 
-    public now: Date;
+    public now: Date = new Date();
 
     private headers: Headers = new Headers();
 
@@ -43,7 +43,7 @@ export class GameComponent implements OnInit {
         }
 
         setInterval(() => {
-            this.now = new Date()
+            this.now = new Date();
         }, 1000);
 
         this.start = new Date();
