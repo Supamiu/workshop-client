@@ -28,6 +28,8 @@ export class GameComponent implements OnInit {
 
     public start: Date;
 
+    public now: Date;
+
     private headers: Headers = new Headers();
 
     constructor(private dataService: DataService, private http: Http, private dialog: MdDialog) {
@@ -40,11 +42,15 @@ export class GameComponent implements OnInit {
             }
         }
 
+        setInterval(() => {
+            this.now = new Date()
+        }, 1000);
+
         this.start = new Date();
     }
 
     public getTime(): Date {
-        return new Date(Date.now() - this.start.getTime());
+        return new Date(this.now.getTime() - this.start.getTime());
     }
 
     public getPlayer(index: number): Player {
@@ -297,21 +303,21 @@ export class GameComponent implements OnInit {
         let y = pawn.y;
 
         // check if x is an integer
-        resultNumber &= this.isInt(x)?1:0;
+        resultNumber &= this.isInt(x) ? 1 : 0;
 
         // check if y is an integer
-        resultNumber &= this.isInt(y)?1:0;
+        resultNumber &= this.isInt(y) ? 1 : 0;
 
         // check if x is on the board
-        resultNumber &= ( x > -1 || x < 20 )?1:0;
+        resultNumber &= ( x > -1 || x < 20 ) ? 1 : 0;
 
         // check if y is on the board
-        resultNumber &= ( y > -1 || y < 20 )?1:0;
+        resultNumber &= ( y > -1 || y < 20 ) ? 1 : 0;
 
         // check if the board's square
         // try catch because if x or y is not an integer an excpetion is throw
         try {
-            resultNumber &= ( this.grid[x][y] == 0 )?1:0;
+            resultNumber &= ( this.grid[x][y] == 0 ) ? 1 : 0;
         } catch (Exception) {
             resultNumber &= 0;
         }
@@ -326,7 +332,7 @@ export class GameComponent implements OnInit {
         // check for the round 2 if the case is into the 8 squares allowed
         if (round == 3) {
             //si 2eme requete --> 3 ou plus intersection
-            resultNumber &= ( ( x < 8 || x > 10 ) || ( y < 8 || y > 10 ) )?1:0;
+            resultNumber &= ( ( x < 8 || x > 10 ) || ( y < 8 || y > 10 ) ) ? 1 : 0;
         }
 
         res = resultNumber == 1;
