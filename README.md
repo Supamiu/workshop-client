@@ -3,7 +3,7 @@
 Client réécrit en angular4.
 
 ## Logiciel Nécessaire :
-  - Npm et node
+  - Npm et Node.js (v6.10.X)
 
 ## Lancement:
 
