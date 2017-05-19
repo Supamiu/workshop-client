@@ -16,7 +16,7 @@ export class HomeComponent {
 
     constructor(private dataService: DataService, private router: Router) {
         this.player1.name = 'IAJS';
-        this.player1.ip = 'localhost:3001';
+        this.player1.ip = 'localhost:8052';
         this.player2.name = 'IAPython';
         this.player2.ip = 'localhost:3002';
     }
