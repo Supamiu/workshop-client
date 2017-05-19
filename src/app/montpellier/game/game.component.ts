@@ -69,7 +69,7 @@ export class MontpellierGameComponent implements OnInit {
     ngOnInit(): void {
         this.continueJeu = true;
 
-        this.http.get("http://" + this.dataService.server.ip + "/connect/" + this.dataService.getPlayer(1).name)
+        this.http.get("https://" + this.dataService.server.ip + "/connect/" + this.dataService.getPlayer(1).name)
             .map(res => res.json())
             .do(res => {
                 this.playerId = res.idJoueur;
@@ -78,19 +78,19 @@ export class MontpellierGameComponent implements OnInit {
             .subscribe(() => {
                 this.pooling();
             });
+
         // Force le premier joueur à placer au milieu
-
-        let start = new Date().getTime();
-
-        this.play_game(this.couleurTour, this.turn, start);
-
         this.lastPlayTime = Math.floor(Date.now() / 1000);
     }
 
     pooling(): void {
         setTimeout(() => {
-            this.http.get("http://" + this.dataService.server.ip + "/turn/" + this.playerId)
-                .map(res => res.json())
+            this.http.get("https://" + this.dataService.server.ip + "/turn/" + this.playerId)
+                .map(res => {
+                    let r = res.json();
+                    //r.numTour++;
+                    return r;
+                })
                 .subscribe(res => {
                         if (res.finPartie) {
                             this.endGame(res.detailFinPartie);
@@ -105,8 +105,10 @@ export class MontpellierGameComponent implements OnInit {
                             this.nbTenailles2 = res.nbTenailles2;
                             this.continueJeu = !res.finPartie;
 
-                            if (res.numTour == 1) {
-                                this.play(Math.trunc(this.nx / 2), Math.trunc(this.ny / 2));
+                            if (res.numTour == 1 || res.numTour == 0) {
+                                this.play(Math.trunc(this.nx / 2), Math.trunc(this.ny / 2), () => {
+                                    this.pooling();
+                                });
                             } else {
                                 this.http.put(
                                     "http://" + this.getPlayer().ip + "/board/",
@@ -115,13 +117,14 @@ export class MontpellierGameComponent implements OnInit {
                                         score: this.couleurTour == 1 ? this.nbTenailles1 : this.nbTenailles2,
                                         score_vs: this.couleurTour == 1 ? this.nbTenailles2 : this.nbTenailles1,
                                         player: this.couleurTour,
-                                        round: this.turn
+                                        round: this.turn + 1
                                     }),
                                     {headers: this.headers}
                                 ).subscribe(res => {
                                     let result = res.json();
-                                    this.play(result.x, result.y);
-                                    this.pooling();
+                                    this.play(result.x, result.y, () => {
+                                        this.pooling();
+                                    });
                                 })
                             }
                         }
@@ -131,7 +134,7 @@ export class MontpellierGameComponent implements OnInit {
                         //On se retrouve ici en cas d'erreur http.
                         this.pooling();
                     })
-        }, 500);
+        }, 1000);
     }
 
     play_game(numplayer: number, numturn: number, startTime: number): void {
@@ -151,7 +154,6 @@ export class MontpellierGameComponent implements OnInit {
             let res = response.json();
             let checked = this.check(res, numturn, startTime);
             if (checked.result) {
-                this.play(res.x, res.y);
                 this.couleurTour = this.couleurTour % 2 + 1;
                 numturn++;
                 this.play_game(this.couleurTour, numturn, new Date().getTime());
@@ -166,15 +168,15 @@ export class MontpellierGameComponent implements OnInit {
         });
     }
 
-    play(x: number, y: number): void {
+    play(x: number, y: number, callback: () => void): void {
         if (!this.continueJeu) return;
 
-        console.log("SENDING  { "+"x:"+x+", y:"+y+" }");
+        console.log("SENDING  { " + "x:" + x + ", y:" + y + " }");
 
-        this.http.get("http://" + this.dataService.server.ip + "/" + x + "/" + y + "/" + this.playerId)
+        this.http.get("http://" + this.dataService.server.ip + "/play/" + x + "/" + y + "/" + this.playerId)
             .map(res => res.json())//Ici on pourra brancher l'adaptation des formats pourris.
             .subscribe(res => {
-
+                callback();
             });
 
         let rslt;
