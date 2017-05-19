@@ -18,7 +18,7 @@ export class HomeComponent {
         this.player1.name = 'IAJS';
         this.player1.ip = 'localhost:8052';
         this.player2.name = 'IAPython';
-        this.player2.ip = 'localhost:3002';
+        this.player2.ip = 'localhost:8000';
     }
 
     public isFormValid(): boolean {
